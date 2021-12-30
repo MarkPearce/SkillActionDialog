@@ -29,7 +29,6 @@ let SelectedActor = selectedToken.actor;
 
 let tokenSkillKeys = Object.keys(tokenSkills);
 let loreKeys = [];
-console.log("tokenSkillKeys " + tokenSkillKeys);
 let loreListForHTML = [];
 let selectedLore = "";
 
@@ -55,11 +54,11 @@ let loreContent = `<form name="select lore">
     </form>`;
 
 let loreDialog = new SkillActionDialog({
-  title: "Lore Selector",
+  title: "Lore selector",
   content: loreContent,
   buttons: {
     performAction: {
-      label: "select lore",
+      label: "Select lore",
       callback: () => uncodedSkill(selectedLore),
     },
     cancel: {
@@ -73,7 +72,6 @@ let loreDialog = new SkillActionDialog({
       .addEventListener("change", changeLore);
   },
 }).render(false);
-//}
 
 //skill data model
 const skillActionDirectory = getSkillActionDirectory();
@@ -99,7 +97,7 @@ let actionList = [];
 let actionListForHTML = [];
 updateActions();
 
-let dialogContent = ` <form name="skill-action-dialog">
+let dialogContent = `<form name="skill-action-dialog">
     <div class="form-group">
         <label>Skill:</label>
         <select name="skill-selector">${skillsTextForHTML}</select>
@@ -116,7 +114,7 @@ let actionsDialog = new SkillActionDialog({
   content: dialogContent,
   buttons: {
     performAction: {
-      label: "Use action",
+      label: "Use Action",
       callback: () => performAction(),
     },
     cancel: {
@@ -161,12 +159,10 @@ function updateActions() {
     ...skillActionDirectory[skillList.indexOf(selectedSkill)].actions,
   ];
   // build html version;
-  let costString = "";
   actionList.forEach((action) => {
+    let costString = "";
     if (action.actionCost != null) {
       costString = " (" + action.actionCost.toString() + ")";
-    } else {
-      costString = "";
     }
     if (action.actionName != selectedAction) {
       actionListForHTML.push(
@@ -252,7 +248,7 @@ function createADiversion(whatVarient) {
   game.pf2e.actions.createADiversion({ event: event, variant: whatVarient });
 }
 
-//macro from a macro
+//TODO use exsiting action macros
 //game.macros.getName(``).execute();
 
 // An array of skills and all of thier actions
@@ -303,7 +299,7 @@ function getSkillActionDirectory() {
       skillName: "Arcana",
       actions: [
         {
-          actionName: "Recall Knowlegde, Arcana",
+          actionName: "Recall Knowledge, Arcana",
           actionType: "enc",
           proficiency: "untrained",
           actionCost: 1,
@@ -450,7 +446,7 @@ function getSkillActionDirectory() {
       skillName: "Crafting",
       actions: [
         {
-          actionName: "Recall Knowlegde, Craft",
+          actionName: "Recall Knowledge",
           actionType: "enc",
           proficiency: "untrained",
           actionCost: 1,
@@ -546,9 +542,9 @@ function getSkillActionDirectory() {
         },
         {
           actionName: "Feint",
-          actionType: "",
+          actionType: "enc",
           proficiency: "trained",
-          actionCost: null,
+          actionCost: 1,
           command: () => {
             coreAction("feint");
           },
