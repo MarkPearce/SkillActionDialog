@@ -24,6 +24,7 @@ if (token == null) {
 let selectedToken = token;
 let tokenSkills = token.actor.data.data.skills;
 let SelectedActor = selectedToken.actor;
+let selectedActorFeats = Array.from(SelectedActor.data.items).filter((item)=>item.type === "feat");
 
 // lore variables
 
@@ -33,7 +34,7 @@ let loreListForHTML = [];
 let selectedLore = "";
 
 tokenSkillKeys.forEach((skillKey) => {
-  if (skillKey.search("-lore") != -1) {
+  if (skillKey.search("-lore") !== -1) {
     loreKeys.push(skillKey);
   }
 });
@@ -137,7 +138,7 @@ let actionsDialog = new SkillActionDialog({
 function updateSkills() {
   skillListForHTML.splice(0, skillListForHTML.length); // clear skill list for HTML
   skillActionDirectory.forEach((skill) => {
-    if (skill.skillName != selectedSkill) {
+    if (skill.skillName !== selectedSkill) {
       skillListForHTML.push(
         `<option value="${skill.skillName}">${skill.skillName}</option>`
       );
@@ -159,12 +160,15 @@ function updateActions() {
     ...skillActionDirectory[skillList.indexOf(selectedSkill)].actions,
   ];
   // build html version;
-  actionList.forEach((action) => {
+  actionList
+    .filter(x => !x.prerequisite || selectedActorFeats.map(x=>x.data.data.slug).includes(x.prerequisite))
+    .sort((a,b) => (a.actionName > b.actionName) ? 1 : ((b.actionName > a.actionName) ? -1 : 0))
+    .forEach((action) => {
     let costString = "";
     if (action.actionCost != null) {
       costString = " (" + action.actionCost.toString() + ")";
     }
-    if (action.actionName != selectedAction) {
+    if (action.actionName !== selectedAction) {
       actionListForHTML.push(
         `<option value="${action.actionName}">${
           action.actionName + costString
@@ -210,7 +214,7 @@ function performAction() {
   let pActionsFromSkill =
     skillActionDirectory[skillList.indexOf(selectedSkill)].actions;
   pActionsFromSkill.forEach((action) => {
-    if (action.actionName == selectedAction) {
+    if (action.actionName === selectedAction) {
       action.command();
     }
   });
@@ -261,6 +265,7 @@ function getSkillActionDirectory() {
           actionName: "Balance",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("balance");
@@ -270,6 +275,7 @@ function getSkillActionDirectory() {
           actionName: "Tumble Through",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("tumbleThrough");
@@ -279,6 +285,7 @@ function getSkillActionDirectory() {
           actionName: "Maneuver in Flight",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("maneuverInFlight");
@@ -288,6 +295,7 @@ function getSkillActionDirectory() {
           actionName: "Squeeze",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             coreAction("squeeze");
@@ -302,6 +310,7 @@ function getSkillActionDirectory() {
           actionName: "Recall Knowledge, Arcana",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("arc");
@@ -311,6 +320,7 @@ function getSkillActionDirectory() {
           actionName: "Borrow an Arcane Spell",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("arc");
@@ -320,8 +330,8 @@ function getSkillActionDirectory() {
           actionName: "Decipher Writing",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
-          command: "decipherWriting",
           command: () => {
             uncodedSkill("arc");
           },
@@ -330,6 +340,7 @@ function getSkillActionDirectory() {
           actionName: "Identify Magic",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("arc");
@@ -339,6 +350,7 @@ function getSkillActionDirectory() {
           actionName: "Learn a Spell",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("arc");
@@ -353,6 +365,7 @@ function getSkillActionDirectory() {
           actionName: "Climb",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("climb");
@@ -362,6 +375,7 @@ function getSkillActionDirectory() {
           actionName: "Force Open",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           //command: "forceOpen",
           command: () => {
@@ -372,6 +386,7 @@ function getSkillActionDirectory() {
           actionName: "Grapple",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("grapple");
@@ -381,6 +396,7 @@ function getSkillActionDirectory() {
           actionName: "High Jump",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("highJump");
@@ -390,6 +406,7 @@ function getSkillActionDirectory() {
           actionName: "Long Jump",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("longJump");
@@ -399,6 +416,7 @@ function getSkillActionDirectory() {
           actionName: "Shove",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("shove");
@@ -408,6 +426,7 @@ function getSkillActionDirectory() {
           actionName: "Swim",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("swim");
@@ -417,6 +436,7 @@ function getSkillActionDirectory() {
           actionName: "Trip",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("trip");
@@ -426,6 +446,7 @@ function getSkillActionDirectory() {
           actionName: "Disarm",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("disarm");
@@ -435,6 +456,7 @@ function getSkillActionDirectory() {
           actionName: "Whirling Throw",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: 'whirling-throw',
           actionCost: 1,
           command: () => {
             coreAction("whirlingThrow");
@@ -449,6 +471,7 @@ function getSkillActionDirectory() {
           actionName: "Recall Knowledge",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("cra");
@@ -458,6 +481,7 @@ function getSkillActionDirectory() {
           actionName: "Repair",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("cra");
@@ -467,6 +491,7 @@ function getSkillActionDirectory() {
           actionName: "Craft",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             coreAction("craft");
@@ -476,6 +501,7 @@ function getSkillActionDirectory() {
           actionName: "Earn Income",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("cra");
@@ -485,6 +511,7 @@ function getSkillActionDirectory() {
           actionName: "Identify Alchemy",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("cra");
@@ -499,6 +526,7 @@ function getSkillActionDirectory() {
           actionName: "Create a Diversion: Words",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             createADiversion("distracting-words");
@@ -508,6 +536,7 @@ function getSkillActionDirectory() {
           actionName: "Create a Diversion: Gesture",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             createADiversion("gesture");
@@ -517,6 +546,7 @@ function getSkillActionDirectory() {
           actionName: "Create a Diversion: Trick",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             createADiversion("trick");
@@ -526,6 +556,7 @@ function getSkillActionDirectory() {
           actionName: "Impersonate",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             coreAction("impersonate");
@@ -535,6 +566,7 @@ function getSkillActionDirectory() {
           actionName: "Lie",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             coreAction("lie");
@@ -544,6 +576,7 @@ function getSkillActionDirectory() {
           actionName: "Feint",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("feint");
@@ -558,6 +591,7 @@ function getSkillActionDirectory() {
           actionName: "Gather Information",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             coreAction("gatherInformation");
@@ -567,6 +601,7 @@ function getSkillActionDirectory() {
           actionName: "Make an Impression",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             coreAction("makeAnImpression");
@@ -576,6 +611,7 @@ function getSkillActionDirectory() {
           actionName: "Request",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("request");
@@ -590,6 +626,7 @@ function getSkillActionDirectory() {
           actionName: "Coerce",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             coreAction("coerce");
@@ -599,6 +636,7 @@ function getSkillActionDirectory() {
           actionName: "Demoralize",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             coreAction("demoralize");
@@ -613,6 +651,7 @@ function getSkillActionDirectory() {
           actionName: "Recall Knowledge",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             loreSkill("recallKnowledge");
@@ -622,6 +661,7 @@ function getSkillActionDirectory() {
           actionName: "Earn Income",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             loreSkill("earnIncome");
@@ -636,6 +676,7 @@ function getSkillActionDirectory() {
           actionName: "Administer First Aid",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 2,
           command: () => {
             uncodedSkill("med");
@@ -645,6 +686,7 @@ function getSkillActionDirectory() {
           actionName: "Recall Knowledge",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("med");
@@ -654,6 +696,7 @@ function getSkillActionDirectory() {
           actionName: "Treat Disease",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("med");
@@ -663,6 +706,7 @@ function getSkillActionDirectory() {
           actionName: "Treat Poison",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("med");
@@ -672,6 +716,7 @@ function getSkillActionDirectory() {
           actionName: "Treat Wounds",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("med");
@@ -686,6 +731,7 @@ function getSkillActionDirectory() {
           actionName: "Command an Animal",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("nat");
@@ -695,6 +741,7 @@ function getSkillActionDirectory() {
           actionName: "Recall Knowledge",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("nat");
@@ -704,6 +751,7 @@ function getSkillActionDirectory() {
           actionName: "Identify Magic",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("nat");
@@ -713,6 +761,7 @@ function getSkillActionDirectory() {
           actionName: "Learn a Spell",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("nat");
@@ -727,6 +776,7 @@ function getSkillActionDirectory() {
           actionName: "Recall Knowledge",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("occ");
@@ -736,6 +786,7 @@ function getSkillActionDirectory() {
           actionName: "Decipher Writing",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("occ");
@@ -745,6 +796,7 @@ function getSkillActionDirectory() {
           actionName: "Identify Magic",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("occ");
@@ -754,6 +806,7 @@ function getSkillActionDirectory() {
           actionName: "Learn a Spell",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("occ");
@@ -768,6 +821,7 @@ function getSkillActionDirectory() {
           actionName: "Perform",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("prf");
@@ -777,6 +831,7 @@ function getSkillActionDirectory() {
           actionName: "Earn Income",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("prf");
@@ -791,6 +846,7 @@ function getSkillActionDirectory() {
           actionName: "Recall Knowledge",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("rel");
@@ -800,6 +856,7 @@ function getSkillActionDirectory() {
           actionName: "Decipher Writing",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("rel");
@@ -809,6 +866,7 @@ function getSkillActionDirectory() {
           actionName: "Identify Magic",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("rel");
@@ -818,6 +876,7 @@ function getSkillActionDirectory() {
           actionName: "Learn a Spell",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("rel");
@@ -832,6 +891,7 @@ function getSkillActionDirectory() {
           actionName: "Recall Knowledge",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("soc");
@@ -841,6 +901,7 @@ function getSkillActionDirectory() {
           actionName: "Subsist",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("soc");
@@ -850,6 +911,7 @@ function getSkillActionDirectory() {
           actionName: "Create Forgery",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("soc");
@@ -859,6 +921,7 @@ function getSkillActionDirectory() {
           actionName: "Decipher Writing",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("soc");
@@ -873,6 +936,7 @@ function getSkillActionDirectory() {
           actionName: "Conceal an Object",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("ste");
@@ -882,6 +946,7 @@ function getSkillActionDirectory() {
           actionName: "Hide",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             coreAction("hide");
@@ -891,6 +956,7 @@ function getSkillActionDirectory() {
           actionName: "Create Forgery",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("ste");
@@ -905,6 +971,7 @@ function getSkillActionDirectory() {
           actionName: "Sense Direction",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("sur");
@@ -914,6 +981,7 @@ function getSkillActionDirectory() {
           actionName: "Subsist",
           actionType: "exp",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("sur");
@@ -923,6 +991,7 @@ function getSkillActionDirectory() {
           actionName: "Cover Tracks",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("sur");
@@ -932,6 +1001,7 @@ function getSkillActionDirectory() {
           actionName: "Track",
           actionType: "exp",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: null,
           command: () => {
             uncodedSkill("sur");
@@ -946,6 +1016,7 @@ function getSkillActionDirectory() {
           actionName: "Palm an Object",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("thi");
@@ -955,6 +1026,7 @@ function getSkillActionDirectory() {
           actionName: "Steal",
           actionType: "enc",
           proficiency: "untrained",
+          prerequisite: null,
           actionCost: 1,
           command: () => {
             uncodedSkill("thi");
@@ -964,6 +1036,7 @@ function getSkillActionDirectory() {
           actionName: "Disable Device",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: 2,
           command: () => {
             uncodedSkill("thi");
@@ -973,6 +1046,7 @@ function getSkillActionDirectory() {
           actionName: "Pick a Lock",
           actionType: "enc",
           proficiency: "trained",
+          prerequisite: null,
           actionCost: 2,
           command: () => {
             coreAction("pickALock");
