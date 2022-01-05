@@ -840,6 +840,31 @@ function getSkillActionDirectory() {
       ],
     },
     {
+      skillName: "Perception",
+      actions: [
+        {
+          actionName: "Seek",
+          actionType: "enc",
+          proficiency: "untrained",
+          prerequisite: null,
+          actionCost: 1,
+          command: () => {
+            coreAction("seek");
+          },
+        },
+        {
+          actionName: "Sense Motive",
+          actionType: "enc",
+          proficiency: "untrained",
+          prerequisite: null,
+          actionCost: 1,
+          command: () => {
+            coreAction("senseMotive");
+          },
+        },
+      ],
+    },
+    {
       skillName: "Religion",
       actions: [
         {
