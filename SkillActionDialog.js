@@ -14,6 +14,7 @@ class SkillActionDialog extends Dialog {
     const $buttons = $content.children(".dialog-buttons");
   }
 }
+
 // start of macro
 
 //get token and actor
@@ -24,7 +25,7 @@ if (token == null) {
 let selectedToken = token;
 let tokenSkills = token.actor.data.data.skills;
 let SelectedActor = selectedToken.actor;
-let selectedActorFeats = Array.from(SelectedActor.data.items).filter((item)=>item.type === "feat");
+let selectedActorFeats = Array.from(SelectedActor.data.items).filter((item) => item.type === "feat");
 
 // lore variables
 
@@ -161,27 +162,27 @@ function updateActions() {
   ];
   // build html version;
   actionList
-    .filter(x => !x.prerequisite || selectedActorFeats.map(x=>x.data.data.slug).includes(x.prerequisite))
-    .sort((a,b) => (a.actionName > b.actionName) ? 1 : ((b.actionName > a.actionName) ? -1 : 0))
+    .filter(x => !x.prerequisite || selectedActorFeats.map(x => x.data.data.slug).includes(x.prerequisite))
+    .sort((a, b) => (a.actionName > b.actionName) ? 1 : ((b.actionName > a.actionName) ? -1 : 0))
     .forEach((action) => {
-    let costString = "";
-    if (action.actionCost != null) {
-      costString = " (" + action.actionCost.toString() + ")";
-    }
-    if (action.actionName !== selectedAction) {
-      actionListForHTML.push(
-        `<option value="${action.actionName}">${
-          action.actionName + costString
-        }</option>`
-      );
-    } else {
-      actionListForHTML.push(
-        `<option value="${action.actionName}" selected = "selected">${
-          action.actionName + costString
-        }</option>`
-      );
-    }
-  });
+      let costString = "";
+      if (action.actionCost != null) {
+        costString = " (" + action.actionCost.toString() + ")";
+      }
+      if (action.actionName !== selectedAction) {
+        actionListForHTML.push(
+          `<option value="${action.actionName}">${
+            action.actionName + costString
+          }</option>`
+        );
+      } else {
+        actionListForHTML.push(
+          `<option value="${action.actionName}" selected = "selected">${
+            action.actionName + costString
+          }</option>`
+        );
+      }
+    });
   actionsTextForHTML = actionListForHTML.toString();
 }
 
@@ -221,7 +222,7 @@ function performAction() {
 }
 
 function coreAction(whatAction) {
-  game.pf2e.actions[whatAction]({ event: event });
+  game.pf2e.actions[whatAction]({event: event});
 }
 
 function uncodedSkill(skillKey) {
@@ -249,7 +250,19 @@ function changeLore(event) {
 }
 
 function createADiversion(whatVarient) {
-  game.pf2e.actions.createADiversion({ event: event, variant: whatVarient });
+  game.pf2e.actions.createADiversion({event: event, variant: whatVarient});
+}
+
+function treatWounds() {
+  async function _executeMacroByName(name) {
+    let pack = game.packs.get('pf2e.pf2e-macros');
+    pack.getIndex().then(index => {
+      let id = index.find(e => e.name === name)?._id;
+      if (id)
+        pack.getDocument(id).then(e => e.execute()
+        )});
+  }
+  _executeMacroByName("Treat Wounds");
 }
 
 //TODO use exsiting action macros
@@ -719,7 +732,7 @@ function getSkillActionDirectory() {
           prerequisite: null,
           actionCost: null,
           command: () => {
-            uncodedSkill("med");
+            treatWounds();
           },
         },
       ],
