@@ -25,7 +25,9 @@ if (token == null) {
 let selectedToken = token;
 let tokenSkills = token.actor.data.data.skills;
 let SelectedActor = selectedToken.actor;
-let selectedActorFeats = Array.from(SelectedActor.data.items).filter((item) => item.type === "feat");
+let selectedActorFeats = Array.from(SelectedActor.data.items).filter(
+  (item) => item.type === "feat"
+);
 
 // lore variables
 
@@ -162,8 +164,14 @@ function updateActions() {
   ];
   // build html version;
   actionList
-    .filter(x => !x.prerequisite || selectedActorFeats.map(x => x.data.data.slug).includes(x.prerequisite))
-    .sort((a, b) => (a.actionName > b.actionName) ? 1 : ((b.actionName > a.actionName) ? -1 : 0))
+    .filter(
+      (x) =>
+        !x.prerequisite ||
+        selectedActorFeats.map((x) => x.data.data.slug).includes(x.prerequisite)
+    )
+    .sort((a, b) =>
+      a.actionName > b.actionName ? 1 : b.actionName > a.actionName ? -1 : 0
+    )
     .forEach((action) => {
       let costString = "";
       if (action.actionCost != null) {
@@ -222,7 +230,7 @@ function performAction() {
 }
 
 function coreAction(whatAction) {
-  game.pf2e.actions[whatAction]({event: event});
+  game.pf2e.actions[whatAction]({ event: event });
 }
 
 function uncodedSkill(skillKey) {
@@ -250,19 +258,29 @@ function changeLore(event) {
 }
 
 function createADiversion(whatVarient) {
-  game.pf2e.actions.createADiversion({event: event, variant: whatVarient});
+  game.pf2e.actions.createADiversion({ event: event, variant: whatVarient });
 }
 
 function treatWounds() {
   async function _executeMacroByName(name) {
-    let pack = game.packs.get('pf2e.pf2e-macros');
-    pack.getIndex().then(index => {
-      let id = index.find(e => e.name === name)?._id;
-      if (id)
-        pack.getDocument(id).then(e => e.execute()
-        )});
+    let pack = game.packs.get("pf2e.pf2e-macros");
+    pack.getIndex().then((index) => {
+      let id = index.find((e) => e.name === name)?._id;
+      if (id) pack.getDocument(id).then((e) => e.execute());
+    });
   }
   _executeMacroByName("Treat Wounds");
+}
+
+function earnIncome() {
+  async function _executeMacroByName(name) {
+    let pack = game.packs.get("pf2e.pf2e-macros");
+    pack.getIndex().then((index) => {
+      let id = index.find((e) => e.name === name)?._id;
+      if (id) pack.getDocument(id).then((e) => e.execute());
+    });
+  }
+  _executeMacroByName("Earn Income");
 }
 
 //TODO use exsiting action macros
@@ -469,7 +487,7 @@ function getSkillActionDirectory() {
           actionName: "Whirling Throw",
           actionType: "enc",
           proficiency: "trained",
-          prerequisite: 'whirling-throw',
+          prerequisite: "whirling-throw",
           actionCost: 1,
           command: () => {
             coreAction("whirlingThrow");
@@ -517,7 +535,7 @@ function getSkillActionDirectory() {
           prerequisite: null,
           actionCost: null,
           command: () => {
-            uncodedSkill("cra");
+            earnIncome();
           },
         },
         {
@@ -677,7 +695,7 @@ function getSkillActionDirectory() {
           prerequisite: null,
           actionCost: null,
           command: () => {
-            loreSkill("earnIncome");
+            earnIncome();
           },
         },
       ],
@@ -847,7 +865,7 @@ function getSkillActionDirectory() {
           prerequisite: null,
           actionCost: null,
           command: () => {
-            uncodedSkill("prf");
+            earnIncome();
           },
         },
       ],
@@ -1088,6 +1106,21 @@ function getSkillActionDirectory() {
           actionCost: 2,
           command: () => {
             coreAction("pickALock");
+          },
+        },
+      ],
+    },
+    {
+      skillName: "Earn Income",
+      actions: [
+        {
+          actionName: "Earn Income",
+          actionType: "exp",
+          proficiency: "untrained",
+          prerequisite: null,
+          actionCost: null,
+          command: () => {
+            earnIncome();
           },
         },
       ],
