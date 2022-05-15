@@ -257,8 +257,8 @@ function changeLore(event) {
   selectedLore = selectElement.value;
 }
 
-function createADiversion(whatVarient) {
-  game.pf2e.actions.createADiversion({ event: event, variant: whatVarient });
+function createADiversion(whatVariant) {
+  game.pf2e.actions.createADiversion({ event: event, variant: whatVariant });
 }
 
 function treatWounds() {
@@ -740,7 +740,7 @@ function getSkillActionDirectory() {
           prerequisite: null,
           actionCost: 1,
           command: () => {
-            uncodedSkill("med");
+            coreAction("treatPoison");
           },
         },
         {
@@ -765,7 +765,7 @@ function getSkillActionDirectory() {
           prerequisite: null,
           actionCost: 1,
           command: () => {
-            uncodedSkill("nat");
+            coreAction("commandAnAnimal");
           },
         },
         {
@@ -1030,7 +1030,7 @@ function getSkillActionDirectory() {
           prerequisite: null,
           actionCost: null,
           command: () => {
-            uncodedSkill("sur");
+            coreAction("senseDirection");
           },
         },
         {
@@ -1060,7 +1060,7 @@ function getSkillActionDirectory() {
           prerequisite: null,
           actionCost: null,
           command: () => {
-            uncodedSkill("sur");
+            coreAction("track");
           },
         },
       ],
