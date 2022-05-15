@@ -63,7 +63,7 @@ let loreDialog = new SkillActionDialog({
   buttons: {
     performAction: {
       label: "Select lore",
-      callback: () => uncodedSkill(selectedLore),
+      callback: () => uncodedSkill(selectedLore,true),
     },
     cancel: {
       label: "Cancel",
@@ -233,13 +233,22 @@ function coreAction(whatAction) {
   game.pf2e.actions[whatAction]({ event: event });
 }
 
-function uncodedSkill(skillKey) {
+function uncodedSkill(skillKey,isSecret = false) {
   const whatSkill = token.actor.data.data.skills[skillKey];
+  if (isSecret == false){
   game.pf2e.Check.roll(new game.pf2e.CheckModifier("", whatSkill), {
     actor,
     type: "skill-check",
     createMessage: true,
   });
+} else {
+    game.pf2e.Check.roll(new game.pf2e.CheckModifier("", whatSkill), {
+    actor,
+    type: "skill-check",
+    options: ['secret'],
+    createMessage: true,
+  });
+}
 }
 
 function loreSkill(whatAction) {
