@@ -1018,6 +1018,16 @@ function getSkillActionDirectory() {
           },
         },
         {
+          actionName: "Sneak",
+          actionType: "exp",
+          proficiency: "untrained",
+          prerequisite: null,
+          actionCost: null,
+          command: () => {
+            coreAction("sneak");
+          },
+        },
+        {
           actionName: "Create Forgery",
           actionType: "exp",
           proficiency: "trained",
